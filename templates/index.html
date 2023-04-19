@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/staticFiles/style.css">
+    <title>Recipe Recommendation System</title>
+
+	<!--<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.2.26/jquery.autocomplete.min.js"></script>
+</head>
+<body>
+    <div class="page">
+    <div class="title">
+        <div>
+        <img src="../staticFiles/imgs/header.png" width="1200" height="300">
+        </div>
+        <div>
+            <p class="intro">Looking for a recipe recommendation based on type,
+            cuisine, cooking technique, or ingredients? Or are you someone
+            with limited recipe knowledge who wants to try something new?
+            Input your preferences below and just like magic - you'll have
+            a new recipe to recreate!
+        </p>
+        </div>
+    </div>
+    <div class="flex-container">
+        <div class="image_column">
+            <br><br>
+            <img src="../staticFiles/imgs/berries.png" width="100" height="100">
+            <br>
+            <img src="../staticFiles/imgs/utensils.png" width="100" height="100">
+            <br>
+            <img src="../staticFiles/imgs/lemon wedge.png" width="100" height="100">
+            <br>
+            <img src="../staticFiles/imgs/lime.png" width="100" height="100">
+            <br>
+            <img src="../staticFiles/imgs/pans.png" width="100" height="100">
+        </div>
+        <div class="user_input">
+        <form action="print_list" method="POST">
+            <label for="ingredients">Enter an Ingredient:</label>
+            <br>
+            <input type="text" class="input_box" id="ingredients" name="recipe_ingredients" placeholder="List of Ingredients">
+            <p>Current Ingredients: {{ string_value }}</p>
+            <button class="add_button" type="submit">Add</button>
+        </form>
+        <form action="get_text" method="POST">
+            <input type="hidden" class="input_box" name="ingredients" value="{{ request.form.recipe_ingredients }}">
+
+            <br><br>
+            <label for="name">Name of Recipe: </label>
+            <br>
+            <input type="text" class="input_box" id="name" name="recipe_name" placeholder="Recipe Name...">
+            <br><br>
+                <label for="dropdown">Recipe Type:</label>
+                <br>
+                <select class="dropdown" name="recipe_types">
+                    {% for type in recipe_types %}
+                      <option value="{{type}}">{{ type }}</option>
+                    {% endfor %}
+                </select>
+
+            <br><br>
+                <label for="dropdown">Course:</label>
+                <br>
+                <select class="dropdown" name="courses">
+                    {% for course in courses %}
+                      <option value="{{course}}">{{ course }}</option>
+                    {% endfor %}
+                </select>
+
+            <br><br>
+                <label for="dropdown">Cooking Technique:</label>
+                <br>
+                <select class="dropdown" name="techniques">
+                    {% for technique in techniques %}
+                      <option value="{{technique}}">{{ technique }}</option>
+                    {% endfor %}
+                </select>
+
+            <br><br>
+                <label for="dropdown">Cuisine:</label>
+                <br>
+                <select class="dropdown" name="cuisines">
+                    {% for cuisine in cuisines %}
+                      <option value="{{cuisine}}">{{ cuisine }}</option>
+                    {% endfor %}
+                </select>
+            <br><br>
+            <button id="search_button" class = "search_button" type="submit">Search</button>
+            <br><br>
+
+        </form>
+        </div>
+
+        <div class="suggestions">
+            <form action="name_suggestion" method="POST">
+                <label for="name">Enter a Recipe:</label>
+                <br>
+                <input type="text" class="input_box" id="name_suggestion" name="recipe_name_suggestion" placeholder="Recipe Name...">
+                <br><br>
+                <button class="search_button">Search</button>
+            </form>
+        Suggestions:
+        <output class="output" type="text" id="output" name="recipe_output" placeholder="Suggestion Here..."></output>
+        <textarea rows="30" cols="40">
+            {% for suggestion in recommendations %}
+              {{ suggestion }}{% if not loop.last %}\n{% endif %}
+            {% endfor %}
+          </textarea>
+        </div>
+        <div class="right_col">
+        <br><br>
+        <img src="../staticFiles/imgs/bowls.png" width="100" height="100">
+        <br>
+        <img src="../staticFiles/imgs/leaves.png" width="100" height="100">
+        <br>
+        <img src="../staticFiles/imgs/lemon.png" width="100" height="100">
+        <br>
+        <img src="../staticFiles/imgs/mushrooms.png" width="100" height="100">
+        <br>
+        <img src="../staticFiles/imgs/plates.png" width="100" height="100">
+        </div>
+    </div>
+    <script>
+        $('#name').autocomplete({
+            serviceUrl: '/search/recipe_name',
+            dataType: 'json',
+            onSearchComplete: function (query, suggestions) {
+              console.log(query);
+            }
+        });
+
+        $('#name_suggestion').autocomplete({
+            serviceUrl: '/search/recipe_name',
+            dataType: 'json',
+            onSearchComplete: function (query, suggestions) {
+              console.log(query);
+            }
+        });
+
+        $('#ingredients').autocomplete({
+            serviceUrl: '/search/recipe_ingredients',
+            dataType: 'json',
+            onSearchComplete: function (query, suggestions) {
+              console.log(query);
+            }
+        });
+        </script>
+</body>
+</html>
